@@ -1,5 +1,4 @@
 
-
 // Mise en place de Fletch
 const getProducts = async () => {
     await fetch("http://localhost:3000/api/products")
@@ -16,10 +15,9 @@ function addProducts(data) {
     for (let curr of data) {
         const linkProduct = makeLink(curr._id)
         const articleProduct = makeArticle()
-        const image = makeImage()
-        const title = makeTitle()
-        const paragraph = makeParagraph()
-
+        const image = makeImage(curr.imageUrl, curr.altTxt)
+        const title = makeTitle(curr.name)
+        const paragraph = makeParagraph(curr.description)
 
         appendChildren(linkProduct)
         linkProduct.appendChild(articleProduct)
@@ -46,22 +44,25 @@ function makeArticle() {
     return article
 }
 
-function makeImage() {
+function makeImage(imageUrl, altTxt) {
     const image = document.createElement("img")
+    image.src = imageUrl
+    image.alt = altTxt
     return image
 }
 
-function makeTitle(h3) {
+function makeTitle(name) {
     const title = document.createElement("h3")
-    title.textContent = "TITRE"
+    title.textContent = name
     return title
 }
 
-function makeParagraph(p) {
+function makeParagraph(description) {
     const paragraph = document.createElement("p")
-    paragraph.textContent = "paragraph"
+    paragraph.textContent = description
     return paragraph
 }
+
 
 
 
