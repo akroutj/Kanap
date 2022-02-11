@@ -14,16 +14,15 @@ getProducts();
 function addProducts(data) {
     for (let curr of data) {
         const linkProduct = makeLink(curr._id)
-        const articleProduct = makeArticle()
+        const articleProduct = document.createElement("article")
+
         const image = makeImage(curr.imageUrl, curr.altTxt)
         const title = makeTitle(curr.name)
         const paragraph = makeParagraph(curr.description)
 
-        appendChildren(linkProduct)
+        items.appendChild(linkProduct)
         linkProduct.appendChild(articleProduct)
-        articleProduct.appendChild(image)
-        articleProduct.appendChild(title)
-        articleProduct.appendChild(paragraph)
+        appendArticleProduct(articleProduct, image, title, paragraph)
     }
 }
 
@@ -39,9 +38,10 @@ function appendChildren(linkProduct) {
 
 }
 
-function makeArticle() {
-    const article = document.createElement("article")
-    return article
+function appendArticleProduct(articleProduct, image, title, paragraph) {
+    articleProduct.appendChild(image)
+    articleProduct.appendChild(title)
+    articleProduct.appendChild(paragraph)
 }
 
 function makeImage(imageUrl, altTxt) {
