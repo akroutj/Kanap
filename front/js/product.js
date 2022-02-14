@@ -74,7 +74,12 @@ function saveCartLocalStorage(color, quantity) {
         imageUrl: imageCart,
         altTxt: altTxtCart
     }
-    localStorage.setItem(id, JSON.stringify(data))
+    if (localStorage.getItem("cart")) {
+        let TmpItems = JSON.parse(localStorage.getItem("cart"))
+        TmpItems.push(data)
+        localStorage.setItem("cart", JSON.stringify(TmpItems))
+    }
+    else localStorage.setItem("cart", JSON.stringify([data]))
 }
 
 function ifSelectIsEmpty(color, quantity) {
