@@ -5,6 +5,9 @@ const id = urlParams.get("id")
 let globalPrice = 0
 let imageCart, altTxtCart
 
+// Mise en place de Fletch - Récupération des données de l'API par ID
+
+
 fetch("http://localhost:3000/api/products/" + id)
     .then((res) => res.json())
     .then((res) => addProductsChoices(res))

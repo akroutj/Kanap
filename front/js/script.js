@@ -1,5 +1,6 @@
 
-// Mise en place de Fletch
+// Mise en place de Fletch - Récupération des données de l'API par ID
+
 const getProducts = async () => {
     await fetch("http://localhost:3000/api/products")
         .then((res) => res.json())
@@ -8,8 +9,11 @@ const getProducts = async () => {
             addProducts(data)
         })
 }
+// Appel de la fonction getProducts (récupération des données)
 
 getProducts();
+
+// Création d'une boucle pour l'affichage des produits (appel des fonctions)
 
 function addProducts(data) {
     for (let curr of data) {
@@ -26,11 +30,15 @@ function addProducts(data) {
     }
 }
 
+// Création du lien de la carte produit par ID
+
 function makeLink(id) {
     const linkProduct = document.createElement("a")
     linkProduct.href = "./product.html?id=" + id
     return linkProduct
 }
+
+// Rattachement du lien produit à items
 
 function appendChildren(linkProduct) {
     const items = document.querySelector("#items")
@@ -38,11 +46,15 @@ function appendChildren(linkProduct) {
 
 }
 
+// Rattachement des éléments enfants à l'article
+
 function appendArticleProduct(articleProduct, image, title, paragraph) {
     articleProduct.appendChild(image)
     articleProduct.appendChild(title)
     articleProduct.appendChild(paragraph)
 }
+
+// Création de l'image
 
 function makeImage(imageUrl, altTxt) {
     const image = document.createElement("img")
@@ -51,11 +63,15 @@ function makeImage(imageUrl, altTxt) {
     return image
 }
 
+// Création d'un titre pour le produit
+
 function makeTitle(name) {
     const title = document.createElement("h3")
     title.textContent = name
     return title
 }
+
+// Création de la description du produit
 
 function makeParagraph(description) {
     const paragraph = document.createElement("p")
