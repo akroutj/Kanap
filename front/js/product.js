@@ -7,7 +7,6 @@ let imageCart, altTxtCart
 
 // Mise en place de Fletch - Récupération des données de l'API par ID
 
-
 fetch("http://localhost:3000/api/products/" + id)
     .then((res) => res.json())
     .then((res) => addProductsChoices(res))
@@ -79,7 +78,10 @@ function saveCartLocalStorage(color, quantity) {
     }
     if (localStorage.getItem("cart")) {
         let TmpItems = JSON.parse(localStorage.getItem("cart"))
-        TmpItems.push(data)
+        let modifCur = {}
+        if (modifCur = TmpItems.find(it => it.id === data.id && it.color === data.color))
+            modifCur.quantity += parseInt(data.quantity)
+        else TmpItems.push(data)
         localStorage.setItem("cart", JSON.stringify(TmpItems))
     }
     else localStorage.setItem("cart", JSON.stringify([data]))

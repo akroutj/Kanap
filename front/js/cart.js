@@ -34,6 +34,7 @@ function makeCartItemContent(item) {
     makeDescription(item, divCartItemContent)
     makeSettings(item, divCartItemContent)
 
+
     return divCartItemContent
 }
 
@@ -78,21 +79,40 @@ function makeSettingsQuantity(item, settings) {
     input.min = "1"
     input.max = "100"
     input.value = item.quantity
-    input.addEventListener("input", newPriceAndQuantity())
+    input.addEventListener("change", () => updatePriceAndQuantity(input.value, item))
     settingsQuantity.appendChild(input)
 }
 
-function newPriceAndQuantity() {
+function updatePriceAndQuantity(newValue, item) {
+    const itemToUpdate = cartArray.find((it) => it.id === item.id && it.color === item.color)
+    itemToUpdate.quantity = Number(newValue)
+    displayTotalQuantity()
+    displayTotalPrice()
+    saveNewValueQuantity(item)
+}
+
+function saveNewValueQuantity(item) {
+    const otherItemOfCart = cartArray.filter((it) => it.id !== item.id || it.color !== item.color)
+    otherItemOfCart.push(item)
+    let dataToSave = JSON.stringify(otherItemOfCart)
+    localStorage.setItem("cart", dataToSave)
 }
 
 function makeSettingsDelete(item, settings) {
     const settingsDelete = document.createElement("div")
     settingsDelete.className = "cart__item__content__settings__delete"
+
+    settingsDelete.addEventListener("click", () => deleteItem(item))
+
     settings.appendChild(settingsDelete)
     const deleteItem = document.createElement("p")
     deleteItem.className = "deleteItem"
     deleteItem.textContent = "supprimer"
     settingsDelete.appendChild(deleteItem)
+}
+
+function deleteItem(item) {
+    console.log("delete")
 }
 
 function makeArticle(item) {
