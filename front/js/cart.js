@@ -23,20 +23,45 @@ function displayItem(item) {
 
 //CART_ITEM
 
+// Création de l'article
+
+function makeArticle(item) {
+    const article = document.createElement("article")
+    article.classList.add("cart__item")
+    article.dataset.id = item.id
+    article.dataset.color = item.color
+    return article
+}
+
+// Création de l'image produit
+
+function makeImageDiv(item) {
+    const div = document.createElement("div")
+    div.classList.add("cart__item__img")
+    const image = document.createElement("img")
+    image.src = item.imageUrl
+    image.alt = item.altTxt
+    div.appendChild(image)
+    return div
+}
+
+//Rattachement et affichage des aticles
+
 function displayArticle(article) {
     document.querySelector("#cart__items").appendChild(article)
 }
 
+// Création des cartes contanant la description et les settings
+
 function makeCartItemContent(item) {
     const divCartItemContent = document.createElement("div")
     divCartItemContent.className = "cart__item__content"
-    console.log(divCartItemContent)
     makeDescription(item, divCartItemContent)
     makeSettings(item, divCartItemContent)
-
-
     return divCartItemContent
 }
+
+// Création du contenu de la description (Titre, couleur et prix)
 
 function makeDescription(item, divCartItemContent) {
     const description = document.createElement("div")
@@ -56,6 +81,8 @@ function makeDescription(item, divCartItemContent) {
     description.appendChild(price)
 }
 
+// Création des contenus des settings
+
 function makeSettings(item, divCartItemContent) {
     const settings = document.createElement("div")
     settings.className = "cart__item__content__settings"
@@ -63,6 +90,8 @@ function makeSettings(item, divCartItemContent) {
     makeSettingsQuantity(item, settings)
     makeSettingsDelete(item, settings)
 }
+
+// Création de l'input quantité et mise en place d'un changement possible des quantité
 
 function makeSettingsQuantity(item, settings) {
     const settingsQuantity = document.createElement("div")
@@ -83,6 +112,8 @@ function makeSettingsQuantity(item, settings) {
     settingsQuantity.appendChild(input)
 }
 
+// Nouveau calcul des quantités et du prix total
+
 function updatePriceAndQuantity(newValue, item) {
     const itemToUpdate = cartArray.find((it) => it.id === item.id && it.color === item.color)
     itemToUpdate.quantity = Number(newValue)
@@ -91,6 +122,8 @@ function updatePriceAndQuantity(newValue, item) {
     saveNewValueQuantity(item)
 }
 
+// Sauvegarde du nouveau calcul dans le localStorage
+
 function saveNewValueQuantity(item) {
     const otherItemOfCart = cartArray.filter((it) => it.id !== item.id || it.color !== item.color)
     otherItemOfCart.push(item)
@@ -98,11 +131,21 @@ function saveNewValueQuantity(item) {
     localStorage.setItem("cart", dataToSave)
 }
 
+
+
+
+
+
+
+
+
+// Création du bouton "supprimer" 
+
 function makeSettingsDelete(item, settings) {
     const settingsDelete = document.createElement("div")
     settingsDelete.className = "cart__item__content__settings__delete"
 
-    settingsDelete.addEventListener("click", () => deleteItem(item))
+    settingsDelete.addEventListener("click", () => deleteItemOnCLick(item))
 
     settings.appendChild(settingsDelete)
     const deleteItem = document.createElement("p")
@@ -111,27 +154,36 @@ function makeSettingsDelete(item, settings) {
     settingsDelete.appendChild(deleteItem)
 }
 
-function deleteItem(item) {
-    console.log("delete")
+// Suppression de l'article et nouveau calcul (prix et quantité). Appel des fonctions
+
+function deleteItemOnCLick(item) {
+    const itemToDelete = cartArray.findIndex(
+        (itemDelete) => itemDelete.id === item.id && itemDelete.color === item.color
+    )
+    cartArray.splice(itemToDelete, 1)
+    displayTotalPrice()
+    displayTotalQuantity()
+    deleteItemToLocalStorage(item)
 }
 
-function makeArticle(item) {
-    const article = document.createElement("article")
-    article.classList.add("cart__item")
-    article.dataset.id = item.id
-    article.dataset.color = item.color
-    return article
+// Suppression de l'article sélectionné dans le localStorage
+
+function deleteItemToLocalStorage(item) {
+    const delIt = cartArray.filter((it) => it.id !== item.id && it.color !== item.color)
+    let dataToSave = JSON.stringify(delIt)
+    localStorage.setItem("cart", dataToSave)
+    location.reload()
 }
 
-function makeImageDiv(item) {
-    const div = document.createElement("div")
-    div.classList.add("cart__item__img")
-    const image = document.createElement("img")
-    image.src = item.imageUrl
-    image.alt = item.altTxt
-    div.appendChild(image)
-    return div
-}
+
+
+
+
+
+
+
+
+
 
 //CART_PRICE
 
