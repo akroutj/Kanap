@@ -174,10 +174,13 @@ function deleteItemToLocalStorage(item) {
 // FORM
 
 function submitForm(e) {
-
     e.preventDefault()
+
     if (cartArray.length === 0) alert("Veuillez remplir le formulaire")
-    console.log(e.target.firstName)
+    if (isEmailInvalid()) return
+    if (isFirstNameInvalid()) return
+    if (isLastNameInvalid()) return
+
     const body = makeRequestBody()
 
     fetch("http://localhost:3000/api/products/order", {
@@ -196,6 +199,36 @@ function submitForm(e) {
             document.location.href = "confirmation.html"
         })
         .catch((error) => console.log(error))
+}
+
+function isEmailInvalid() {
+    const email = document.querySelector("#email").value
+    const regex = /^[A-Za-z0-9+_.-]+@(.+)$/
+    if (regex.test(email) === false) {
+        alert("Entrez une adresse mail valide")
+        return true
+    }
+    return false
+}
+
+function isFirstNameInvalid() {
+    const firstName = document.querySelector("#firstName").value
+    const regex = /^[A-Za-z\é\è\ê\ë\ï\ä\-]+$/
+    if (regex.test(firstName) === false) {
+        alert("Entrez un prénom valide")
+        return true
+    }
+    return false
+}
+
+function isLastNameInvalid() {
+    const lastName = document.querySelector("#lastName").value
+    const regex = /^[A-Za-z\é\è\ê\ë\ï\ä\-]+$/
+    if (regex.test(lastName) === false) {
+        alert("Entrez un nom valide")
+        return true
+    }
+    return false
 }
 
 function makeRequestBody() {
