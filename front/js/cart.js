@@ -2,8 +2,12 @@
 // Récupération des données du localStorage et création d'un tableau
 
 const cartArray = JSON.parse(localStorage.getItem("cart"))
-console.log(cartArray)
 cartArray.forEach((item) => displayItem(item))
+
+// Ecoute de l'évenement sur l'envoi du formulaire
+
+const form = document.querySelector(".cart__order__form")
+form.addEventListener("submit", submitForm)
 
 // Affichage des produits dans le panier
 
@@ -131,14 +135,6 @@ function saveNewValueQuantity(item) {
     localStorage.setItem("cart", dataToSave)
 }
 
-
-
-
-
-
-
-
-
 // Création du bouton "supprimer" 
 
 function makeSettingsDelete(item, settings) {
@@ -175,15 +171,53 @@ function deleteItemToLocalStorage(item) {
     location.reload()
 }
 
+// FORM
 
+function submitForm(e) {
 
+    e.preventDefault()
+    if (cartArray.length === 0) alert("Veuillez remplir le formulaire")
+    console.log(e.target.firstName)
+    const body = makeRequestBody()
 
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+            localStorage.clear();
+            localStorage.setItem("orderID", data.orderId);
+            document.location.href = "confirmation.html"
+        })
+        .catch((error) => console.log(error))
+}
 
+function makeRequestBody() {
 
+    const firstName = form.elements.firstName.value
+    const lastName = form.elements.lastName.value
+    const address = form.elements.address.value
+    const city = form.elements.city.value
+    const email = form.elements.email.value
 
-
-
-
+    const body = {
+        contact: {
+            firstName: firstName,
+            lastName: lastName,
+            address: address,
+            city: city,
+            email: email
+        },
+        products: cartArray.map((item) => item.id)
+    }
+    return body
+}
 
 //CART_PRICE
 

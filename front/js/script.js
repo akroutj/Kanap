@@ -9,6 +9,7 @@ const getProducts = async () => {
             addProducts(data)
         })
 }
+
 // Appel de la fonction getProducts (récupération des données)
 
 getProducts();
@@ -19,11 +20,9 @@ function addProducts(data) {
     for (let curr of data) {
         const linkProduct = makeLink(curr._id)
         const articleProduct = document.createElement("article")
-
         const image = makeImage(curr.imageUrl, curr.altTxt)
         const title = makeTitle(curr.name)
         const paragraph = makeParagraph(curr.description)
-
         items.appendChild(linkProduct)
         linkProduct.appendChild(articleProduct)
         appendArticleProduct(articleProduct, image, title, paragraph)
