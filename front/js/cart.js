@@ -173,6 +173,8 @@ function deleteItemToLocalStorage(item) {
 
 // FORM
 
+// POST du formulaire et creation d'un bon de commande - Redirection vers la page confirmation
+
 function submitForm(e) {
     e.preventDefault()
 
@@ -201,6 +203,9 @@ function submitForm(e) {
         .catch((error) => console.log(error))
 }
 
+
+// Vérification des saisies de l'adresse mail via regex
+
 function isEmailInvalid() {
     const email = document.querySelector("#email").value
     const regex = /^[A-Za-z0-9+_.-]+@(.+)$/
@@ -210,6 +215,8 @@ function isEmailInvalid() {
     }
     return false
 }
+
+// Vérification des saisies du prénom via regex
 
 function isFirstNameInvalid() {
     const firstName = document.querySelector("#firstName").value
@@ -221,6 +228,8 @@ function isFirstNameInvalid() {
     return false
 }
 
+// Vérification des saisies du nom via regex
+
 function isLastNameInvalid() {
     const lastName = document.querySelector("#lastName").value
     const regex = /^[A-Za-z\é\è\ê\ë\ï\ä\-]+$/
@@ -230,6 +239,8 @@ function isLastNameInvalid() {
     }
     return false
 }
+
+// Création des éléments requis pour le formulaire
 
 function makeRequestBody() {
 

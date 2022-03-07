@@ -79,7 +79,6 @@ button.addEventListener("click", (e) => {
     const color = document.querySelector("#colors").value
     const quantity = document.querySelector("#quantity").value
     ifSelectIsEmpty(color, quantity)
-    saveCartLocalStorage(color, quantity)
 })
 
 // Sauvegarde des options couleur et quantité dans le localStorage
@@ -109,8 +108,9 @@ function saveCartLocalStorage(color, quantity) {
 
 function ifSelectIsEmpty(color, quantity) {
     if (color === '' || quantity === '' || color == null || quantity == 0) {
-        alert("Choississez une couleur et une quantité")
+        alert("Veuillez choisir une quantité et/ou une couleur")
     } else {
+        saveCartLocalStorage(color, quantity)
         window.location.href = "cart.html"
     }
 }
