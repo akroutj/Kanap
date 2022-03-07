@@ -173,7 +173,7 @@ function deleteItemToLocalStorage(item) {
 
 // FORM
 
-// POST du formulaire et creation d'un bon de commande - Redirection vers la page confirmation
+// POST du formulaire et création d'un bon de commande - Redirection vers la page confirmation
 
 function submitForm(e) {
     e.preventDefault()
