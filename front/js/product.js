@@ -88,7 +88,6 @@ function saveCartLocalStorage(color, quantity) {
         id: id,
         color: color,
         quantity: Number(quantity),
-        price: globalPrice,
         title: title,
         imageUrl: imageCart,
         altTxt: altTxtCart

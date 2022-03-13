@@ -2,7 +2,15 @@
 // Récupération des données du localStorage et création d'un tableau
 
 const cartArray = JSON.parse(localStorage.getItem("cart"))
-cartArray.forEach((item) => displayItem(item))
+cartArray.forEach((item) => {
+    fetch("http://localhost:3000/api/products/" + item.id)
+        .then((res) => res.json())
+        .then((res) => displayItem({ ...res, quantity: item.quantity, color: item.color, title: item.title }))
+
+})
+
+
+
 
 // Ecoute de l'évenement sur l'envoi du formulaire
 
@@ -22,7 +30,7 @@ function displayItem(item) {
     article.appendChild(divCartItemContent)
 
     displayTotalQuantity()
-    displayTotalPrice()
+    displayTotalPrice(item)
 }
 
 //CART_ITEM
@@ -81,7 +89,7 @@ function makeDescription(item, divCartItemContent) {
     description.appendChild(color)
 
     const price = document.createElement("p")
-    price.textContent = item.price + " €"
+    price.textContent = item.price
     description.appendChild(price)
 }
 
@@ -119,11 +127,11 @@ function makeSettingsQuantity(item, settings) {
 // Nouveau calcul des quantités et du prix total
 
 function updatePriceAndQuantity(newValue, item) {
-    const itemToUpdate = cartArray.find((it) => it.id === item.id && it.color === item.color)
-    itemToUpdate.quantity = Number(newValue)
-    displayTotalQuantity()
-    displayTotalPrice()
-    saveNewValueQuantity(item)
+    const itemToUpdate = cartArray.find((it) => it.id === item._id && it.color === item.color)
+    itemToUpdate.quantity = parseInt(newValue)
+    displayTotalQuantity(item)
+    newDisplayTotalPrice(itemToUpdate, item.quantity)
+    saveNewValueQuantity(itemToUpdate)
 }
 
 // Sauvegarde du nouveau calcul dans le localStorage
@@ -153,11 +161,12 @@ function makeSettingsDelete(item, settings) {
 // Suppression de l'article et nouveau calcul (prix et quantité). Appel des fonctions
 
 function deleteItemOnCLick(item) {
-    const itemToDelete = cartArray.findIndex(
+    const itemToDelete = cartArray.find(
         (itemDelete) => itemDelete.id === item.id && itemDelete.color === item.color
     )
     cartArray.splice(itemToDelete, 1)
-    displayTotalPrice()
+    displayTotalPrice({ quantity: 0, price: item.price }, item.quantity
+    )
     displayTotalQuantity()
     deleteItemToLocalStorage(item)
 }
@@ -178,10 +187,15 @@ function deleteItemToLocalStorage(item) {
 function submitForm(e) {
     e.preventDefault()
 
+    for (let x of [firstNameErrorMsg, lastNameErrorMsg])
+        x.textContent = ""
+
     if (cartArray.length === 0) alert("Veuillez remplir le formulaire")
     if (isEmailInvalid()) return
     if (isFirstNameInvalid()) return
     if (isLastNameInvalid()) return
+    if (isAddressInvalid()) return
+    if (isCityInvalid()) return
 
     const body = makeRequestBody()
 
@@ -222,7 +236,8 @@ function isFirstNameInvalid() {
     const firstName = document.querySelector("#firstName").value
     const regex = /^[A-Za-z\é\è\ê\ë\ï\ä\-]+$/
     if (regex.test(firstName) === false) {
-        alert("Entrez un prénom valide")
+        const firstNameErrorMsg = document.querySelector("#firstNameErrorMsg")
+        firstNameErrorMsg.textContent = "Veuillez entrer un prénom valide"
         return true
     }
     return false
@@ -234,7 +249,34 @@ function isLastNameInvalid() {
     const lastName = document.querySelector("#lastName").value
     const regex = /^[A-Za-z\é\è\ê\ë\ï\ä\-]+$/
     if (regex.test(lastName) === false) {
-        alert("Entrez un nom valide")
+        const lastNameErrorMsg = document.querySelector("#lastNameErrorMsg")
+        lastNameErrorMsg.textContent = "Veuillez entrer un nom valide"
+        return true
+    }
+    return false
+}
+
+// Vérification des saisies de l'adresse via regex
+
+function isAddressInvalid() {
+    const address = document.querySelector("#address").value
+    const regex = /^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+$/
+    if (regex.test(address) === false) {
+        const addressErrorMsg = document.querySelector("#addressErrorMsg")
+        addressErrorMsg.textContent = "Veuillez entrer une adresse valide"
+        return true
+    }
+    return false
+}
+
+// Vérification des saisies de la ville via regex
+
+function isCityInvalid() {
+    const city = document.querySelector("#city").value
+    const regex = /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/
+    if (regex.test(city) === false) {
+        const cityErrorMsg = document.querySelector("#cityErrorMsg")
+        cityErrorMsg.textContent = "Veuillez entrer une ville valide"
         return true
     }
     return false
@@ -275,8 +317,19 @@ function displayTotalQuantity() {
 
 //Calcul du prix total des articles sélectionnés
 
-function displayTotalPrice() {
+function displayTotalPrice(item, prevQuantity = 0) {
     const totalPrice = document.querySelector("#totalPrice")
-    const total = cartArray.reduce((total, item) => total + item.quantity * item.price, 0)
+    const total = (parseInt(totalPrice.textContent) ? parseInt(totalPrice.textContent) : 0) - (prevQuantity * item.price) + (item.quantity * item.price)
     totalPrice.textContent = total
 }
+
+function newDisplayTotalPrice(item, prevQuantity = 0) {
+    const diff = item.quantity - prevQuantity
+    const totalPrice = document.querySelector("#totalPrice")
+    const total = (parseInt(totalPrice.textContent) ? parseInt(totalPrice.textContent) : 0) + (diff * item.price)
+    totalPrice.textContent = total
+    location.reload()
+}
+
+
+
